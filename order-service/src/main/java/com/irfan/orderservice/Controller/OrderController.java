@@ -34,4 +34,10 @@ public class OrderController {
         return orderService.getAllOrders();
     }
 
+    @GetMapping("{orderId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Order getProductById(@PathVariable Long orderId) {
+        return orderService.getOrderById(orderId);
+    }
+
 }

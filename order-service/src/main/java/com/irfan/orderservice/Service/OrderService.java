@@ -1,6 +1,7 @@
 package com.irfan.orderservice.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.irfan.orderservice.Repository.OrderRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.irfan.orderservice.Dto.OrderLineItemsDto;
 import com.irfan.orderservice.Dto.OrderRequest;
+import com.irfan.orderservice.Exception.OrderNotFoundException;
 import com.irfan.orderservice.Model.Order;
 import com.irfan.orderservice.Model.OrderLineItems;
 
@@ -47,6 +49,18 @@ public class OrderService {
         }
 
         return orders;
+    }
+
+    public Order getOrderById(Long orderId) {
+        Optional<Order> getOrder = orderRepository.findById(orderId);
+
+        if (getOrder.isPresent()) {
+            Order order = getOrder.get();
+            log.info("Retrieved Order by ID {}: {}", orderId, order);
+            return order;
+        } else {
+            throw new OrderNotFoundException("Order not found with ID: " + orderId);
+        }
     }
 
     private OrderLineItems mapToDto(OrderLineItemsDto orderLineItemsDto) {
