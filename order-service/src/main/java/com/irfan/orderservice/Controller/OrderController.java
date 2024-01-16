@@ -40,4 +40,10 @@ public class OrderController {
         return orderService.getOrderById(orderId);
     }
 
+    @PutMapping("{orderId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Order updateProductById(@PathVariable Long orderId, @RequestBody OrderRequest orderRequest) {
+        return orderService.updateProductById(orderId, orderRequest);
+    }
+
 }

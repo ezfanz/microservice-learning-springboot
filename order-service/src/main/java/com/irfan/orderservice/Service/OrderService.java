@@ -3,6 +3,7 @@ package com.irfan.orderservice.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.irfan.orderservice.Repository.OrderRepository;
 
@@ -71,5 +72,34 @@ public class OrderService {
         return orderLineItems;
 
     }
+
+    public Order updateProductById(Long orderId, OrderRequest orderRequest) {
+        // Check if the order with the given orderId exists
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+
+        if (optionalOrder.isPresent()) {
+            // Order found, update its fields
+            Order existingOrder = optionalOrder.get();
+
+            List<OrderLineItems> updatedOrderLineItems = orderRequest.getOrderLineItemsDtoList()
+                    .stream()
+                    .map(this::mapToDto)
+                    .collect(Collectors.toList());
+
+            existingOrder.setOrderLineItemsList(updatedOrderLineItems);
+
+            // Log the update
+            log.info("Updated product by ID {}: {}", orderId, existingOrder);
+
+            // Save the updated order
+            return orderRepository.save(existingOrder);
+
+        } else {
+            // Handle the case where the order doesn't exist, throw an exception or return null, depending on your design
+            throw new OrderNotFoundException("Order with ID " + orderId + " not found");
+        }
+    }
+
+
 
 }
